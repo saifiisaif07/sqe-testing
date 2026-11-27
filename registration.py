@@ -38,7 +38,7 @@ def prerequisites_satisfied(completed: set[str], required: set[str]) -> bool:
     """Return whether the completed-course record meets prerequisites."""
     if not required:
         return True
-    return bool(completed.intersection(required))
+    return required.issubset(completed)
 
 
 def registration_decision(student: Student, course: Course) -> str:
@@ -47,7 +47,7 @@ def registration_decision(student: Student, course: Course) -> str:
         raise ValueError("Invalid dues")
     if not 0 <= course.enrolled <= course.capacity or course.capacity < 1:
         raise ValueError("Invalid capacity or enrollment")
-    if student.outstanding_dues > 1000:
+    if student.outstanding_dues > 0:
         return "DUES_BLOCK"
     if course.code in student.registered_courses:
         return "ALREADY_REGISTERED"
@@ -55,7 +55,7 @@ def registration_decision(student: Student, course: Course) -> str:
         return "PREREQUISITES_MISSING"
     if not check_credit_limit(student.current_credits, course.credit_hours):
         return "CREDIT_LIMIT"
-    if course.enrolled > course.capacity:
+    if course.enrolled == course.capacity:
         return "WAITLISTED"
     return "REGISTERED"
 
