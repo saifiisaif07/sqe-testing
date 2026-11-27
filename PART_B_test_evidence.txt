@@ -1,0 +1,31 @@
+PART B — EXECUTION EVIDENCE
+Environment: Python 3.13.5, pytest 9.0.2, pytest-cov installed
+System under test: original, unmodified registration.py
+
+INITIAL COVERAGE (black-box suite only)
+Command:
+python -m pytest -q --cov=registration --cov-branch --cov-report=term-missing tests/test_blackbox.py
+Result: 34 passed, 15 failed (49 total)
+Statements: 54/57 covered (94.74%)
+Branches: 23/26 covered (88.46%)
+pytest-cov combined displayed coverage: 93%
+Missing statements: lines 51, 59, 71
+Missing branch arcs: 50->51, 58->59, 70->71
+
+FINAL COVERAGE (black-box + white-box suites)
+Command:
+python -m pytest -q --cov=registration --cov-branch --cov-report=term-missing tests/test_blackbox.py tests/test_whitebox.py
+Result: 44 passed, 15 failed (59 total)
+All 10 added white-box test instances passed.
+Statements: 56/57 covered (98.25%)
+Branches: 25/26 covered (96.15%)
+pytest-cov combined displayed coverage: 98%
+Remaining missing statement: line 59
+Remaining missing branch arc: 58->59
+
+The 15 failures are the same requirement-derived black-box failures recorded in Part A.
+They were not changed or suppressed. Line 59 is unreachable for valid ordinary inputs:
+the earlier capacity validation rejects enrolled > capacity, while line 59 requires
+that same condition. WB-09 and WB-10 isolate register_course()'s waitlist handling
+using monkeypatch; they do not claim to cover the unreachable registration_decision
+branch.
